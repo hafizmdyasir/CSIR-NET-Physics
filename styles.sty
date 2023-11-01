@@ -4,6 +4,7 @@
 \ProvidesPackage{styles}[2023/05/24 Custom LaTeX environment for adding questions and answers of MCQ type]
 
 \RequirePackage{graphicx} % For including images
+\RequirePackage{xparse} % For defining commands with optional arguments
 
 % Define a counter for the question numbering
 \newcounter{questionnumber}[section] % Reset counter at each section
@@ -20,10 +21,20 @@
 
 \newcommand{\question}[1]{%
   \par\bigskip%
-  \textbf{\thequestionnumber}. #1\par%
+  \textbf{\thequestionnumber.} #1\par%
 }
 
-% Define a command to automatically generate answer options
+% Define the \option command with optional image, counter, and option text arguments
+\NewDocumentCommand{\option}{o m m}{%
+  \par\medskip%
+  \IfNoValueTF{#1}{% Check if the image argument is provided
+    \textbf{#2.} #3%
+  }{% No image provided
+    \textbf{#2.} \includegraphics[width=0.4\textwidth]{#1} #3%
+  }%\par
+}
+
+% Define a command to generate answer options
 \newcommand{\options}[1]{%
   \renewcommand{\arraystretch}{1.5}% Adjust vertical spacing in the table
   \begin{tabular}{@{}lp{0.45\textwidth}lp{0.45\textwidth}@{}}%
@@ -31,6 +42,3 @@
   \end{tabular}%
   \par%
 }
-
-% Define a command to format each answer option
-\newcommand{\option}[1]{\textbf{#1.}}
